@@ -1,25 +1,27 @@
-module Faker
+# encoding: utf-8
+
+module FFaker
   module Identification
     extend ModuleUtils
     extend self
 
+    ETHNICITIES = ['African American', 'Asian/Pacific Islander', 'Caucasian', 'Hispanic', 'Native American', 'Multiracial', 'Other', 'Prefer not to respond'].freeze
+    GENDERS = %w[Male Female].freeze
+
     def drivers_license
-      Faker.bothify('?###-###-##-###-#').upcase
+      FFaker.bothify('?###-###-##-###-#').upcase
     end
 
     def ssn
-      Faker.numerify('###-##-####')
+      FFaker.numerify('###-##-####')
     end
 
     def ethnicity
-      ETHNICITIES.rand
+      fetch_sample(ETHNICITIES)
     end
 
     def gender
-      GENDERS.rand
+      fetch_sample(GENDERS)
     end
-
-    ETHNICITIES = k ['African American', 'Asian/Pacific Islander', 'Caucasian', 'Hispanic', 'Native American', 'Multiracial', 'Other', 'Prefer not to respond']
-    GENDERS = k %w(Male Female)
   end
 end

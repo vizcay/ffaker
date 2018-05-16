@@ -1,10 +1,20 @@
-module Faker
+# encoding: utf-8
+
+module FFaker
   module Movie
     extend ModuleUtils
     extend self
 
+    SUFFIXES = [
+      'from Hell', 'from Outer Space', 'from Mars', 'from the Black Lagoon', 'with a Thousand Faces',
+      'from Across the Ocean', 'Who Fell to Earth', 'That Came to Dinner'
+    ].freeze
+    COLORS = %w[Red Yellow Black White].freeze
+
+    RATINGS = %w[G PG PG-13 R NC-17].freeze # According to MPAA
+
     def title
-      case rand(4)
+      case rand(0..3)
       when 0 then title_with_prefix
       when 1 then title_with_suffix
       when 2 then simple_title
@@ -12,53 +22,44 @@ module Faker
       end
     end
 
-    PREFIXES = k [ "Time of the", "Season of the", "Return of the", "I am", "Planet of the", "War of the",
-      "Invasion of the", "I Married a", "Legend of", "Codename:", "Case of the Missing", "Day of the", "Curse of the",
-      "Rise of the", "The", "A Fistful of", "Journey of the" ]
-    ADJ_AND_ADV = k %w{ Action Hungry Ultra Dangerous Danger Tokyo Red Blue Green Killer Electric Blonde Flying
-      Forbidden Nuclear Fake American Death Champagne Bloody }
-    NOUNS = k %w{ Wolf Wolves Cousins Jungle Witch Woman Women Man Men Identity Ninja Ninjas Pickpocket Hills Clash
-      Wizard World Brain Brains Fly Mutant Blow Diaries Gypsy Diaries Dreams Tears City Cat Tentacle Friday Rain Thief
-      Beast Demon Monster }
-    SUFFIXES = k [ "from Hell", "from Outer Space", "from Mars", "from the Black Lagoon", "with a Thousand Faces",
-      "from Across the Ocean", "Who Fell to Earth", "That Came to Dinner"]
+    def rating
+      fetch_sample(RATINGS)
+    end
 
     private
 
     def title_with_prefix
-      "#{PREFIXES.rand} #{maybe_adj_or_adv}#{NOUNS.rand}"
+      "#{fetch_sample(PREFIXES)} #{maybe_adj_or_adv}#{fetch_sample(NOUNS)}"
     end
 
     def title_with_suffix
-      "The #{maybe_adj_or_adv}#{NOUNS.rand} #{SUFFIXES.rand}"
+      "The #{maybe_adj_or_adv}#{fetch_sample(NOUNS)} #{fetch_sample(SUFFIXES)}"
     end
 
     def maybe_adj_or_adv
-      if rand(2) == 1
-        ADJ_AND_ADV.rand + " "
-      end
+      fetch_sample(ADJ_AND_ADV) + ' ' if rand(0..1) == 1
     end
 
     def simple_title
-      "#{ADJ_AND_ADV.rand} #{NOUNS.rand}"
+      "#{fetch_sample(ADJ_AND_ADV)} #{fetch_sample(NOUNS)}"
     end
 
     def title_from_formula
-      case rand(13)
-      when 0 then "#{NOUNS.rand} 2: Electric Boogaloo"
-      when 1 then "The #{NOUNS.rand} Without a #{NOUNS.rand}"
-      when 2 then "The #{NOUNS.rand} from #{rand(20_000)} Leagues"
-      when 3 then "#{simple_title}: The #{Faker::Name.name} Story"
-      when 4 then "When #{Faker::Name.first_name} Met #{Faker::Name.first_name}"
-      when 5 then "Dr. #{NOUNS.rand}"
-      when 6 then "Je Vous Presente, #{Faker::Name.first_name}"
-      when 7 then "#{rand(3000)} A.D."
-      when 8 then "The #{NOUNS.rand} from #{Faker::Address.neighborhood}"
-      when 9 then "Christmas on #{Faker::Address.street_name}"
-      when 10 then "The #{ %w{ Red Yellow Black White }.rand } Rose of #{Faker::AddressUK.country}"
-      when 11 then "Hard Boiled #{NOUNS.rand}"
+      case rand(0..12)
+      when 0 then "#{fetch_sample(NOUNS)} 2: Electric Boogaloo"
+      when 1 then "The #{fetch_sample(NOUNS)} Without a #{fetch_sample(NOUNS)}"
+      when 2 then "The #{fetch_sample(NOUNS)} from #{rand(0...20_000)} Leagues"
+      when 3 then "#{simple_title}: The #{FFaker::Name.name} Story"
+      when 4 then "When #{FFaker::Name.first_name} Met #{FFaker::Name.first_name}"
+      when 5 then "Dr. #{fetch_sample(NOUNS)}"
+      when 6 then "Je Vous Presente, #{FFaker::Name.first_name}"
+      when 7 then "#{rand(0...2999)} A.D."
+      when 8 then "The #{fetch_sample(NOUNS)} from #{FFaker::Address.neighborhood}"
+      when 9 then "Christmas on #{FFaker::Address.street_name}"
+      when 10 then "The #{fetch_sample(COLORS)} Rose of #{FFaker::AddressUK.country}"
+      when 11 then "Hard Boiled #{fetch_sample(NOUNS)}"
       else
-        String.new.tap{|s| n = simple_title; s.replace("#{n} 2: Son of #{n}")}
+        ::String.new.tap { |s| n = simple_title; s.replace("#{n} 2: Son of #{n}") }
       end
     end
   end

@@ -1,9 +1,7 @@
 # encoding: utf-8
 
-# => author: PapePathe
-# => email: pathe.sene@xarala.sn
-# => website: http://www.xarala.sn
-module  Faker
+module FFaker
+  # Author: PapePathe<pathe.sene@xarala.sn> http://www.xarala.sn
   module PhoneNumberSN
     extend ModuleUtils
     extend self
@@ -14,23 +12,23 @@ module  Faker
     #  76 =>  Tigo
     #  70 =>  Expresso
     #
-    MobileOperatorsPrefix = %w(70 76 77)
+    MobileOperatorsPrefix = %w[70 76 77].freeze
 
     # Home or Work Operator prefixes
     #
     #  33 =>  Orange
     #
-    HomeWorkOperatorsPrefix = %w(33)
+    HomeWorkOperatorsPrefix = %w[33].freeze
 
     # Return a prefix in MobileOperatorsPrefix
-    # @see Faker::PhoneNumberSN::MobileOperatorsPrefix
+    # @see FFaker::PhoneNumberSN::MobileOperatorsPrefix
     #
     def mobile_phone_prefix
-      MobileOperatorsPrefix[rand(3)]
+      fetch_sample(MobileOperatorsPrefix)
     end
 
     # Return a prefix in HomeWorkOperatorsPrefix
-    # @see Faker::PhoneNumberSN::HomeWorkOperatorsPrefix
+    # @see FFaker::PhoneNumberSN::HomeWorkOperatorsPrefix
     #
     def homework_phone_prefix
       HomeWorkOperatorsPrefix[0]
@@ -42,7 +40,7 @@ module  Faker
     # Example 726 29 05
     #
     def short_phone_number
-      Faker.numerify('###-##-##')
+      FFaker.numerify('###-##-##')
     end
 
     # Generates a mobile phone number
@@ -60,20 +58,20 @@ module  Faker
     # Example 33 906 29 05
     #
     def homework_number
-      "#{homework_phone_prefix}-#{[8, 9][rand(1)]}#{Faker.numerify('##-##-##')}"
+      "#{homework_phone_prefix}-#{rand(8..9)}#{FFaker.numerify('##-##-##')}"
     end
 
     # Generates a random phone number mobile or home or work
     #
     def phone_number
-      case rand(10)
-        when 0 then homework_number
-        when 9 then homework_number
-        when 3 then mobile_number
-        when 5 then mobile_number
-        when 6 then mobile_number
-        when 8 then mobile_number
-        else        homework_number
+      case rand(0..9)
+      when 0 then homework_number
+      when 9 then homework_number
+      when 3 then mobile_number
+      when 5 then mobile_number
+      when 6 then mobile_number
+      when 8 then mobile_number
+      else        homework_number
       end
     end
   end

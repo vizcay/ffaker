@@ -1,5 +1,8 @@
-module Faker
+require 'ffaker/utils/random_utils'
+module FFaker
   module ArrayUtils
+    extend RandomUtils
+
     def self.const_array(argument)
       array = argument.is_a?(Array) ? argument : argument.to_a
       array.extend ArrayUtils
@@ -7,29 +10,32 @@ module Faker
     end
 
     def self.random_pick(array, n)
-      indexes = (0...array.length).sort_by{Kernel.rand}[0...n]
-      indexes.map { |n| array[n].dup }
+      warn '[ArrayUtils.random_pick] is deprecated. Please use the ModuleUtils#fetch_sample method'
+      fetch_sample(array, count: n)
     end
 
     def self.rand(array)
-      array[Kernel.rand(array.length)].dup
+      warn '[ArrayUtils.rand] is deprecated. Please use the ModuleUtils#fetch_sample method'
+      fetch_sample(array)
     end
 
     def self.freeze_all(array)
-      array.each { |e| e.freeze }
+      array.each(&:freeze)
       array.freeze
       array
     end
 
     def self.shuffle(array)
-      array.sort_by{Kernel.rand}
+      array.sort_by { FFaker::Random.rand }
     end
 
     def random_pick(n)
+      warn '[ArrayUtils#random_pick] is deprecated. Please use the ModuleUtils#fetch_sample method'
       ArrayUtils.random_pick(self, n)
     end
 
     def rand
+      warn '[ArrayUtils#rand] is deprecated. Please use the ModuleUtils#fetch_sample method'
       ArrayUtils.rand(self)
     end
 

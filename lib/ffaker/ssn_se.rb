@@ -1,8 +1,8 @@
 # encoding: utf-8
+
 require 'date'
 
-module Faker
-
+module FFaker
   # The Social Security number is a 12-digit number in the format:
   # "YYYYDDMM-XXXX'
   #
@@ -23,10 +23,12 @@ module Faker
     extend ModuleUtils
     extend self
 
+    GENDERS = %w[female male].freeze
+
     def ssn(opts = {})
       from   = opts[:from]   || ::Time.local(1940, 1, 1)
       to     = opts[:to]     || ::Time.now
-      gender = (opts[:gender] || GENDERS.rand).to_s
+      gender = (opts[:gender] || fetch_sample(GENDERS)).to_s
 
       raise_error_on_bad_arguments(from, to, gender)
 
@@ -37,7 +39,7 @@ module Faker
 
     def generate_ssn(from, to, gender)
       birth_date = random_birth_time_between(from, to)
-      birth_date_str = birth_date.strftime("%Y%m%d")      # "19800228"
+      birth_date_str = birth_date.strftime('%Y%m%d')      # "19800228"
       region = get_random_region_for(gender)              # "413"
       ssn_without_check_digit = birth_date_str + region   # "19800228413"
       check_digit = luhn_check(ssn_without_check_digit)   # "9"
@@ -45,36 +47,34 @@ module Faker
     end
 
     def raise_error_on_bad_arguments(from, to, gender)
-      raise ArgumentError, "Invalid from argument: from" unless to.is_a? ::Time
-      raise ArgumentError, "Invalid from argument: from" unless from.is_a? ::Time
-      raise ArgumentError, "Invalid argument: from > to" if from > to
-      raise ArgumentError, "Invalid argument: gender" unless GENDERS.include?(gender.to_s)
+      raise ArgumentError, 'Invalid from argument: from' unless to.is_a? ::Time
+      raise ArgumentError, 'Invalid from argument: from' unless from.is_a? ::Time
+      raise ArgumentError, 'Invalid argument: from > to' if from > to
+      raise ArgumentError, 'Invalid argument: gender' unless GENDERS.include?(gender.to_s)
     end
 
-    GENDERS = k ["female", "male"]
-
-    def random_birth_time_between(from=::Time.local(1940, 1, 1), to=::Time.now)
+    def random_birth_time_between(from = ::Time.local(1940, 1, 1), to = ::Time.now)
       ::Time.at(from + rand * (to.to_f - from.to_f))
     end
 
     def get_random_region_for(gender)
       region_number = case gender
-      when "female" then get_random_region_even
-      when "male" then get_random_region_odd
+                      when 'female' then get_random_region_even
+                      when 'male' then get_random_region_odd
       end
       three_character_string(region_number)
     end
 
     def get_random_region_even
-      rand(499) * 2
+      rand(0..498) * 2
     end
 
     def get_random_region_odd
-      rand(499) * 2 + 1
+      rand(0..498) * 2 + 1
     end
 
     def three_character_string(number)
-      "%03d" % number
+      format('%03d', number)
     end
 
     # http://en.wikipedia.org/wiki/Luhn_algorithm
@@ -82,10 +82,10 @@ module Faker
       multiplications = []
 
       number.split(//).each_with_index do |digit, i|
-        if i % 2 == 0
-          multiplications << digit.to_i * 2
-        else
-          multiplications << digit.to_i
+        multiplications << if i.even?
+                             digit.to_i * 2
+                           else
+                             digit.to_i
         end
       end
 
@@ -96,10 +96,10 @@ module Faker
         end
       end
 
-      if sum % 10 == 0
-        control_digit = 0
-      else
-        control_digit = (sum / 10 + 1) * 10 - sum
+      control_digit = if sum % 10 == 0
+                        0
+                      else
+                        (sum / 10 + 1) * 10 - sum
       end
 
       control_digit.to_s

@@ -6,9 +6,9 @@ N = 10_000
 def run(name)
   require name
   Benchmark.bm do |rep|
-    rep.report("generating #{ N } names (#{name} #{Faker::VERSION})") do
+    rep.report("generating #{N} names (#{name} #{FFaker::VERSION})") do
       N.times do
-        Faker::Name.name
+        FFaker::Name.name
       end
     end
   end
@@ -16,5 +16,5 @@ def run(name)
   exit(0)
 end
 
-fork { run("faker") }; Process.wait
-fork { run("ffaker") }; Process.wait
+fork { run('faker') }; Process.wait
+fork { run('ffaker') }; Process.wait

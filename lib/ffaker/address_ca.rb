@@ -1,30 +1,32 @@
-module Faker
+# encoding: utf-8
+
+require 'ffaker/address'
+
+module FFaker
   module AddressCA
-    include Faker::Address
+    include FFaker::Address
+
     extend ModuleUtils
     extend self
 
+    POSTAL_CODE_FORMAT = '?#? #?#'.freeze
+    POSTAL_CODE_CHARS = %w[A B C E G H J K L M N P R S T V X Y].freeze
+    PROVINCE_ABBRS = %w[NL NS PE NB QC ON MB SK AB BC YT NT NU].freeze
+
     def postal_code
-      Faker.bothify(POSTAL_CODE_FORMATS.rand).upcase
+      FFaker.numerify(POSTAL_CODE_FORMAT.gsub('?') { fetch_sample(POSTAL_CODE_CHARS) })
     end
 
     def province
-      PROVINCE.rand
+      fetch_sample(PROVINCE)
+    end
+
+    def city
+      fetch_sample(CITY)
     end
 
     def province_abbr
-      PROVINCE_ABBRS.rand
+      fetch_sample(PROVINCE_ABBRS)
     end
-
-    POSTAL_CODE_FORMATS = k ['?#? #?#']
-
-    PROVINCE = k [
-      'Newfoundland and Labrador', 'Nova Scotia', 'Prince Edward Island',
-      'New Brunswick', 'Quebec', 'Ontario', 'Manitoba', 'Saskatchewan',
-      'Alberta', 'British Columbia', 'Yukon', 'Northwest Territories',
-      'Nunavut'
-    ]
-
-    PROVINCE_ABBRS = k %w(NL NS PE NB QC ON MB SK AB BC YT NT NU)
   end
 end

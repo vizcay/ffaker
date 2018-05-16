@@ -1,10 +1,19 @@
 # encoding: utf-8
 
-module Faker
+require 'ffaker/internet'
+
+module FFaker
   module InternetSE
-    extend ModuleUtils
     include Internet
+
+    extend ModuleUtils
     extend self
+
+    BYTE = [*'0'..'255'].freeze
+    HOSTS = %w[gmail.com yahoo.com hotmail.com spray.se passagen.se].freeze
+    DOMAIN_SUFFIXES = %w[se nu com].freeze
+    DISPOSABLE_HOSTS = %w[mailinator.com suremail.info spamherelots.com binkmail.com safetymail.info].freeze
+    SLUG_DELIMITERS = %w[- _ .].freeze
 
     def email(name = nil)
       "#{user_name(name)}@#{domain_name}"
@@ -14,16 +23,16 @@ module Faker
     # (like tempinbox.com). you can really send an email to these
     # addresses an access it by going to the service web pages.
     def disposable_email(name = nil)
-      "#{user_name(name)}@#{DISPOSABLE_HOSTS.rand}"
+      "#{user_name(name)}@#{fetch_sample(DISPOSABLE_HOSTS)}"
     end
 
     def free_email(name = nil)
-      "#{user_name(name)}@#{HOSTS.rand}"
+      "#{user_name(name)}@#{fetch_sample(HOSTS)}"
     end
 
     # Used to fake login names were dot is not allowed
     def login_user_name
-      user_name.gsub('.','')
+      user_name.tr('.', '')
     end
 
     # Mostly used for email creation
@@ -33,35 +42,32 @@ module Faker
     end
 
     def user_name_random
-      variant = rand(2)
-      case variant
+      case rand(0..1)
       when 0 then user_name_variant_short
       when 1 then user_name_variant_long
-      else        user_name_variant_short
       end
     end
 
     def user_name_variant_long
-      array_parts = [ NameSE.first_name, NameSE.last_name ]
-      array_parts.map!{ |word| word.gsub(/\W/, '') }
+      array_parts = [NameSE.first_name, NameSE.last_name]
+      array_parts.map! { |word| word.gsub(/\W/, '') }
       join_to_user_name(array_parts)
     end
 
     def user_name_variant_short
-      array_parts = [ NameSE.first_name ]
-      array_parts.map!{ |word| word.gsub(/\W/, '') }
+      array_parts = [NameSE.first_name]
+      array_parts.map! { |word| word.gsub(/\W/, '') }
       join_to_user_name(array_parts)
     end
 
     def user_name_from_name(name)
-      array_parts = ArrayUtils.shuffle(name.scan(/\w+/))
+      array_parts = shuffle(name.scan(/\w+/))
       join_to_user_name(array_parts)
     end
 
     def join_to_user_name(array_parts)
-      join_char = ArrayUtils.rand(%w(. _))
-      array_parts.map!(&:downcase)
-      array_parts.join(join_char)
+      join_char = fetch_sample(%w[. _])
+      array_parts.map(&:downcase).join(join_char)
     end
 
     def domain_name
@@ -69,10 +75,10 @@ module Faker
     end
 
     def domain_word
-      company_name_single_word.tap { |dw|
+      company_name_single_word.tap do |dw|
         dw.gsub!(/\W/, '')
         dw.downcase!
-      }
+      end
     end
 
     def company_name_single_word
@@ -80,7 +86,7 @@ module Faker
     end
 
     def domain_suffix
-      DOMAIN_SUFFIXES.rand
+      fetch_sample(DOMAIN_SUFFIXES)
     end
 
     def uri(protocol)
@@ -88,18 +94,17 @@ module Faker
     end
 
     def http_url
-      uri("http")
+      uri('http')
     end
 
     def ip_v4_address
-      (1..4).map { BYTE.random_pick(1) }.join(".")
+      (1..4).map { fetch_sample(BYTE) }.join('.')
     end
 
-    BYTE = k((0..255).to_a.map { |n| n.to_s })
-    HOSTS = k %w(gmail.com yahoo.com hotmail.com spray.se passagen.se)
-    DOMAIN_SUFFIXES = k %w(se nu com)
-    DISPOSABLE_HOSTS = k %w(mailinator.com suremail.info spamherelots.com
-                            binkmail.com safetymail.info)
+    def slug(words = nil, glue = nil)
+      glue ||= fetch_sample(SLUG_DELIMITERS)
 
+      (words || FFaker::Lorem.words(2).join(' ')).gsub(' ', glue).downcase
+    end
   end
 end

@@ -1,8 +1,18 @@
+# encoding: utf-8
+
 require 'helper'
 
 class TestFakerEducation < Test::Unit::TestCase
+  include DeterministicHelper
+
+  assert_methods_are_deterministic(
+    FFaker::Education,
+    :degree_short, :degree, :major,
+    :school_name, :school_generic_name, :school
+  )
+
   def setup
-    @tester = Faker::Education
+    @tester = FFaker::Education
   end
 
   def test_degree_short
@@ -22,11 +32,10 @@ class TestFakerEducation < Test::Unit::TestCase
   end
 
   def test_school_generic_name
-    assert @tester.school_name.match(/.+/)
+    assert @tester.school_generic_name.match(/.+/)
   end
 
   def test_school
     assert @tester.school.match(/.+ .+( .+)?/)
   end
 end
-

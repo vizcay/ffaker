@@ -1,28 +1,37 @@
+# encoding: utf-8
+
 require 'helper'
 
 class TestFaker < Test::Unit::TestCase
+  include DeterministicHelper
+
   def test_numerify
-    assert Faker.numerify('###').match(/\d{3}/)
+    assert FFaker.numerify('###').match(/\d{3}/)
+    assert_deterministic { FFaker.numerify('###') }
   end
 
   def test_numerify_with_array
-    assert Faker.numerify(['###', '###']).match(/\d{3}/)
+    assert FFaker.numerify(['###', '###']).match(/\d{3}/)
+    assert_deterministic { FFaker.numerify(['###', '###']) }
   end
 
   def test_letterify
-    assert Faker.letterify('???').match(/[a-z]{3}/)
+    assert FFaker.letterify('???').match(/[a-z]{3}/)
+    assert_deterministic { FFaker.letterify('???') }
   end
 
   def test_letterify_with_array
-    assert Faker.letterify(['???', '???']).match(/[a-z]{3}/)
+    assert FFaker.letterify(['???', '???']).match(/[a-z]{3}/)
+    assert_deterministic { FFaker.letterify(['???', '???']) }
   end
 
   def test_bothify
-    assert Faker.bothify('???###').match(/[a-z]{3}\d{3}/)
+    assert FFaker.bothify('???###').match(/[a-z]{3}\d{3}/)
+    assert_deterministic { FFaker.bothify('???###') }
   end
 
   def test_bothify_with_array
-    assert Faker.bothify(['???###', '???###']).match(/[a-z]{3}\d{3}/)
+    assert FFaker.bothify(['???###', '???###']).match(/[a-z]{3}\d{3}/)
+    assert_deterministic { FFaker.bothify(['???###', '???###']) }
   end
-
 end

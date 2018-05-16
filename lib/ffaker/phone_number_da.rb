@@ -1,13 +1,12 @@
 # encoding: utf-8
 
-# => author: wiseleyb
-# => email: wiseleyb@gmail.com
-# based on information from http://en.wikipedia.org/wiki/Telephone_numbers_in_Australia
-module  Faker
+module FFaker
+  # Author: wiseleyb<wiseleyb@gmail.com>
+  # Based on information from http://en.wikipedia.org/wiki/Telephone_numbers_in_Australia
   module PhoneNumberDA
     extend ModuleUtils
     extend self
-        
+
     # Generates a general phone number
     #  xxxxxxxx
     #
@@ -24,13 +23,13 @@ module  Faker
 
     # generates mobile or home/work number
     def phone_number
-      Faker.numerify("########")      
+      FFaker.numerify('########')
     end
-    
+
     def country_code
-      "+45"
+      '+45'
     end
-    
+
     def international_mobile_phone_number
       international_phone_number
     end
@@ -40,9 +39,7 @@ module  Faker
     end
 
     def international_phone_number
-      Faker.numerify("#{country_code} #{phone_number}"
-      
+      "#{country_code} #{phone_number}"
     end
-    
   end
 end
