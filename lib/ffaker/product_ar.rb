@@ -1,6 +1,3 @@
-# encoding: utf-8
-# => author: Pablo Vizcay github.com/vizcay
-
 module Faker
   module ProductAR
     extend ModuleUtils
@@ -35,11 +32,11 @@ module Faker
       end
     end
 
-    BRANDS = k %w(Adidas Nike Garbarino Puma Longvie Topper Logitech)
+    BRANDS = k %w(Atma Siam Philco Phillips Noblex Sanyo Longvie Whirlpool)
 
-    ADJ = k %w(Aereo Automático Poderoso Audible Alta-Definición GPS Portable de-Disco Eléctrico Video de-Entrada
-      de-Salida Directo Remoto Digital)
-    NOUN = k %w(Filtro Compresor Sistema Visor Montaje Adaptador Amplificador Puente Kit Transmisor Receptor
-      Sintonizador Controlador Componente)
+    ADJ = k %w(Multifuncion Automático Eficiente Portatil Eléctrico Digital Plus Max 1200W 1000W 800W)
+    NOUN = k %w(Aire-Acondicionado Aspiradora Caloventor SMART-TV LED-TV Heladera Freezer Lavarropas
+                Secarropas Lavavajillas Lavasecarropas Licuadora Microcomponente Microondas Minicomponente
+                Planchita Secador Radiograbador Reproductor-DVD/Blue-Ray Tostador Split)
   end
 end
